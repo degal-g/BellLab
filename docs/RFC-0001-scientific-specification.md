@@ -1,0 +1,417 @@
+# RFC-0001 — Scientific Specification
+
+**Status:** Referência científica inicial  
+**Projeto:** BellLab  
+**Idioma:** Português
+
+Este documento estabelece a especificação funcional e científica de referência
+do BellLab. As futuras implementações devem preservar seus princípios,
+convenções e requisitos de reprodutibilidade. Esta RFC define *o que* o sistema
+deve representar, medir e comunicar; ela não prescreve algoritmos, fórmulas ou
+detalhes de implementação.
+
+## 1. Objetivo
+
+O BellLab é um framework científico de código aberto para análise temporal,
+espectral e modal de idiofones percutidos a partir de gravações no formato WAV.
+Seu propósito é organizar, analisar, comparar e comunicar evidências acústicas
+de forma consistente, rastreável e apropriada para pesquisa.
+
+O objetivo principal é produzir resultados reproduzíveis para estudos em
+acústica, patrimônio histórico, musicologia, conservação e engenharia acústica.
+Sinos históricos constituem o primeiro domínio de aplicação, sem limitar o
+núcleo a essa família instrumental.
+O software deve permitir que uma gravação, seus metadados, as escolhas de
+análise e seus resultados sejam preservados como um conjunto científico
+auditável.
+
+O BellLab não substitui a interpretação especializada. Ele fornece uma base
+computacional explícita para que hipóteses e conclusões possam ser examinadas,
+comparadas e reproduzidas por outros pesquisadores.
+
+### Supported Instrument Families
+
+O núcleo científico é aplicável, entre outras, às seguintes famílias e classes
+de instrumentos ou objetos sonoros percutidos:
+
+- Bells;
+- Carillons;
+- Gongs;
+- Singing bowls;
+- Cymbals;
+- Metallic plates;
+- Rectangular plates;
+- Circular plates;
+- Lithophones;
+- Wooden idiophones;
+- Ceramic vessels;
+- Archaeological sounding objects.
+
+Especializações futuras para essas famílias poderão acrescentar vocabulário,
+metadados e convenções de domínio sem alterar o núcleo do BellLab.
+
+---
+
+## 2. Escopo
+
+O BellLab deverá oferecer estruturas e análises capazes de descrever, quando os
+dados e os parâmetros disponíveis permitirem, os seguintes aspectos de uma
+gravação e de um idiofone percutido:
+
+- duração do sinal;
+- detecção do impacto ou início do evento sonoro;
+- caracterização de ruído;
+- relação sinal-ruído (SNR);
+- faixa dinâmica;
+- envelope temporal;
+- tempos característicos de decaimento;
+- representação por FFT;
+- representação tempo-frequência por STFT, com convenções explícitas de janela,
+  avanço temporal, escala, canais e padding;
+- detecção de picos por quadro e associação em trajetórias espectrais como
+  observações matemáticas, sem lhes atribuir automaticamente significado modal;
+- caracterização descritiva dessas trajetórias por frequência, amplitude,
+  regressões operacionais, cobertura e lacunas, também sem promoção modal;
+- caracterização espectral global por potência linear, incluindo distribuição,
+  rolloff, flatness, entropia, densidade e largura de picos, frações tonais e
+  energia por bandas, sem classificar automaticamente regimes físicos;
+- caracterização espectral resolvida no tempo por quadros após o impacto,
+  reutilizando métricas globais em potência linear para descrever energia,
+  centroide, rolloff, flatness, entropia, densidade, frações tonais,
+  ocupação, bandas, tendências e pontos de mudança operacionais, sem
+  classificar transições de regime;
+- comparação descritiva entre condições dinâmicas nominais (`pp`, `p`, `mf`,
+  `f`, `ff`) a partir de resumos por condição, agregando repetições e
+  comparando métricas de excitação, espectrais globais e espectrais resolvidas
+  no tempo sob critérios explícitos de comparabilidade instrumental e
+  espectral, sem classificar linearidade, provar não linearidade ou associar
+  candidatos individuais entre condições;
+- descritores operacionais de caráter espectral observado, calculados
+  exclusivamente a partir de métricas já existentes e organizados por dimensões
+  independentes como estrutura espectral, evolução temporal, preservação
+  operacional de linhas e confiabilidade da evidência, com critérios, pesos,
+  scores, conflitos e limitações auditáveis, sem constituir prova de
+  linearidade, não linearidade, caos, transição física de regime ou modo físico;
+- seleção reversível de trajetórias caracterizadas como candidatos modais
+  operacionais por critérios configuráveis e auditáveis, sem identificá-las
+  automaticamente como modos físicos;
+- evidência operacional pré/pós-impacto para distinguir componentes emergentes,
+  amplificadas, persistentes e reexcitadas sem rejeitar automaticamente linhas
+  já presentes antes do impacto;
+- visualização do tipo waterfall;
+- identificação modal;
+- rastreamento modal ao longo do tempo;
+- fator de qualidade modal (Q);
+- energia modal;
+- comparação entre gravações;
+- geração automática de relatórios científicos.
+
+O escopo inclui a associação desses resultados a metadados de aquisição,
+identificação do objeto sonoro e contexto experimental. Não pressupõe que toda gravação
+permita estimar todas as grandezas: a disponibilidade e a qualidade de cada
+resultado devem ser informadas de maneira explícita.
+
+---
+
+## 3. Pipeline científico
+
+O BellLab adota o seguinte pipeline conceitual. Cada etapa deve preservar a
+rastreabilidade das entradas, configurações e saídas que lhe dizem respeito.
+
+```text
+Aquisição
+    ↓
+Leitura
+    ↓
+Pré-processamento
+    ↓
+Análise temporal
+    ↓
+Análise espectral
+    ↓
+Análise modal
+    ↓
+Comparação
+    ↓
+Relatório
+```
+
+- **Aquisição:** registra o contexto em que a gravação foi realizada, incluindo
+  informações disponíveis sobre o idiofone, o ambiente e a instrumentação.
+- **Leitura:** incorpora o arquivo WAV e suas propriedades observáveis ao
+  contexto científico do experimento.
+- **Pré-processamento:** prepara uma representação do sinal para as análises,
+  sempre com parâmetros e transformações documentados.
+- **Análise temporal:** descreve a evolução do sinal no tempo, incluindo impacto,
+  amplitude, ruído e decaimento.
+- **Análise espectral:** descreve a distribuição temporal ou global do conteúdo
+  acústico em frequência.
+- **Análise modal:** organiza componentes modais identificáveis e suas
+  propriedades acústicas ao longo do tempo.
+- **Comparação:** relaciona resultados de duas ou mais gravações sob critérios
+  explícitos e compatíveis.
+- **Relatório:** reúne dados de entrada, configurações, resultados, limitações e
+  proveniência em uma apresentação adequada à comunicação científica.
+
+As etapas podem ser estendidas ou parcialmente executadas, mas uma saída nunca
+deve ocultar quais etapas contribuíram para sua produção.
+
+---
+
+## 4. Objetos científicos
+
+### Signal
+
+`Signal` representa o sinal de áudio carregado em memória. Cientificamente, é a
+observação digital de uma emissão sonora: preserva amostras, referência temporal,
+taxa de amostragem, duração, canais e unidade de amplitude. Ele é a entrada
+direta das análises.
+
+### Recording
+
+`Recording` representa a gravação como objeto de pesquisa. Ela associa um
+`Signal` à identidade do idiofone, à origem do arquivo, aos metadados de
+aquisição e aos resultados derivados. Uma gravação deve permanecer distinguível
+de suas análises: diferentes configurações podem produzir diferentes resultados
+para a mesma observação original.
+
+### Envelope
+
+`Envelope` representa a evolução temporal da amplitude característica do sinal.
+É um objeto de apoio para descrever o ataque, a sustentação, o ruído residual e
+o decaimento acústico de uma emissão percutida.
+
+### Spectrum
+
+`Spectrum` representa o conteúdo acústico em função da frequência para um
+contexto de análise declarado. Ele permite descrever componentes, bandas e
+relações espectrais sem confundir a representação com uma interpretação modal.
+
+### GlobalSpectralCharacterization
+
+`GlobalSpectralCharacterization` descreve o espectro de uma gravação como uma
+distribuição global de potência linear. Preserva domínio original, conversão,
+janela, detrending, faixa, grade FFT e resolução física limitada pela duração,
+além de momentos, rolloffs, flatness, entropia, crest factor espectral, picos,
+larguras, densidade, espaçamento, energia tonal operacional, resíduo, ocupação
+e bandas configuráveis. Essas métricas não constituem diagnóstico definitivo
+de ruído, caos, turbulência, não linearidade, acoplamento ou identidade modal.
+Picos globais permanecem observações matemáticas e não são promovidos a
+`ModalCandidate` ou `ModalMode`.
+
+### TimeResolvedSpectralCharacterization
+
+`TimeResolvedSpectralCharacterization` descreve a evolução temporal de métricas
+espectrais globais calculadas quadro a quadro depois de um impacto. A política
+de quadros, duração, hop, padding temporal, janela, detrending, FFT, faixa de
+frequência, detector de picos, bandas, regiões temporais, regressões e pontos
+de mudança deve ser explícita e auditável. Quadros silenciosos, fracos ou não
+finitos permanecem representados como inválidos, com motivo estruturado. O
+resultado pode relatar ataque de banda larga, cauda mais tonal, deslocamento de
+centroide, mudanças de densidade e persistência de bandas, mas não prova
+transição física de regime, não linearidade, caos nem identidade modal.
+
+### DynamicConditionComparisonResult
+
+`DynamicConditionComparisonResult` descreve como métricas já calculadas mudam ao
+longo da ordem dinâmica nominal `pp < p < mf < f < ff`. A unidade de comparação
+é o resumo de cada condição, não uma única gravação isolada: repetições da mesma
+condição são agregadas por estatísticas descritivas robustas e auditáveis. O
+resultado preserva condições ausentes, incompatibilidades instrumentais,
+incompatibilidades espectrais, efeitos de clipping, pares adjacentes ou saltos
+nominais, comparações contra uma referência configurável e sequências por
+métrica com monotonicidade operacional. A ordem dos rótulos musicais não garante
+ordenação física de intensidade, e nenhuma diferença observada constitui por si
+só prova de linearidade, não linearidade, mudança modal ou transição de regime.
+
+### ResponseRegimeDescription
+
+`ResponseRegimeDescription` resume o caráter espectral observado de uma condição
+dinâmica por descritores operacionais baseados em limiares explícitos aplicados
+a métricas já calculadas. A descrição é separada em dimensões independentes:
+estrutura espectral, evolução temporal, identidade operacional de linhas e
+confiabilidade da evidência. Cada descritor preserva critérios individuais,
+operadores, thresholds, pesos, scores de suporte e oposição, métricas
+indisponíveis, conflitos e limitações como clipping, baixa relação sinal/fundo,
+alta variabilidade entre repetições, métricas ausentes e resolução limitada. O
+resultado pode descrever uma resposta como dominada por linhas discretas,
+espectro denso, banda larga, mista ou com ataque banda larga seguido de cauda
+mais tonal, mas esses rótulos não são provas de linearidade, não linearidade,
+caos, transição física de regime, identidade modal ou conversão para
+`ModalMode`.
+
+### ModalMode
+
+`ModalMode` representa uma componente modal identificada ou acompanhada em uma
+gravação. Seu papel científico é organizar uma observação relacionada à resposta
+vibratória e acústica do idiofone, incluindo propriedades que possam ser
+estimadas e suas incertezas quando aplicáveis.
+
+### ModalCandidate
+
+`ModalCandidate` representa uma trajetória espectral caracterizada que satisfez
+critérios matemáticos e operacionais explicitamente configurados. Ele precede
+qualquer interpretação como `ModalMode`; sua aceitação é reversível, preserva
+os critérios avaliados e não comprova frequência natural, amortecimento ou
+identidade modal física.
+
+### PreImpactEvidence
+
+`PreImpactEvidence` descreve se o nível rastreado de uma componente mudou em
+janelas configuráveis antes e depois do impacto. Presença pré-impacto isolada
+não implica irrelevância nem rejeição: uma componente preexistente pode ser
+amplificada ou reexcitada. O resultado é operacional e não estabelece
+causalidade física definitiva.
+
+### Associação dentro da condição de excitação
+
+Uma condição dinâmica (`pp`, `p`, `mf`, `f`, `ff` ou `unspecified`) é uma
+categoria experimental, não uma medida física absoluta. Candidatos de
+repetições com o mesmo rótulo podem formar agrupamentos operacionais por
+compatibilidade frequencial e critérios opcionais auditáveis. A associação
+preserva candidatos sem correspondência, impede mistura entre rótulos e não
+promove agrupamentos a `ModalMode`.
+
+### Caracterização da condição de excitação
+
+O rótulo musical de dinâmica descreve uma categoria ou intenção experimental,
+não uma intensidade física absoluta. A condição de excitação pode preservar
+metadados de microfone, interface, ganho, canal, distância, posição e excitador,
+enquanto uma caracterização separada mede pico, RMS, energia discreta, duração
+operacional, clipping, fundo e relação sinal/fundo na unidade efetivamente
+disponível. Níveis dBFS exigem referência digital e não são níveis dB SPL.
+Consistência ordinal entre `pp`, `p`, `mf`, `f` e `ff` é apenas um diagnóstico:
+inversões não renomeiam gravações e não iniciam associação entre condições.
+
+### Experiment
+
+`Experiment` representa um contexto reprodutível de investigação. Ele reúne
+gravações, configurações de análise, metadados metodológicos e resultados
+produzidos em uma campanha ou pergunta científica definida.
+
+`Experiment` também explicita uma relação comparativa entre gravações,
+resultados, idiofones ou campanhas. Deve declarar referências, critérios de
+compatibilidade e limitações, evitando comparações implícitas entre condições
+incompatíveis.
+
+---
+
+## 5. Grandezas físicas
+
+O BellLab poderá futuramente calcular, armazenar, comparar ou relatar as
+seguintes grandezas, entre outras cientificamente justificadas:
+
+- tempo e duração;
+- frequência;
+- amplitude;
+- fase;
+- energia;
+- potência;
+- nível de pressão sonora, quando houver calibração apropriada;
+- nível relativo em dBFS, quando apropriado;
+- ruído e piso de ruído;
+- relação sinal-ruído;
+- faixa dinâmica;
+- instante de impacto;
+- envelope de amplitude;
+- constante de decaimento;
+- tempo característico para 1/e;
+- tempo característico para -20 dB;
+- tempo característico para -40 dB;
+- tempo característico para -60 dB;
+- largura de banda;
+- frequência central;
+- fator de qualidade Q;
+- razão de amortecimento;
+- energia modal;
+- estabilidade, deriva e rastreamento de frequência modal;
+- relações entre modos;
+- métricas de similaridade e diferença entre gravações;
+- incertezas, intervalos de confiança e indicadores de qualidade, quando
+  pertinentes.
+
+A presença de uma grandeza em um resultado deve indicar sua unidade, seu
+contexto de análise e sua disponibilidade. Esta RFC não define, nesta etapa, os
+métodos de cálculo ou critérios de validade de cada grandeza.
+
+---
+
+## 6. Convenções
+
+O BellLab adota as seguintes convenções de projeto e comunicação científica:
+
+- As unidades devem seguir o Sistema Internacional de Unidades (SI) sempre que
+  aplicável.
+- Tempo deve ser expresso em segundos (`s`).
+- Frequência deve ser expressa em hertz (`Hz`).
+- Amplitude deve ser expressa em dBFS quando apropriado à natureza digital e não
+  calibrada da gravação; unidades físicas devem ser declaradas somente quando a
+  calibração correspondente estiver disponível.
+- Toda unidade, escala, referência e transformação de amplitude deve ser
+  declarada junto ao resultado.
+- A nomenclatura de objetos, campos, grandezas e relatórios deve ser consistente
+  em todo o projeto.
+- O espaçamento entre bins de uma FFT deve ser distinguido da resolução
+  espectral efetiva; zero padding densifica a grade, mas não cria informação
+  nova nem define sozinho a separabilidade de componentes próximas.
+- Métricas de distribuição de energia devem usar potência ou densidade de
+  potência linear declarada, nunca valores em decibéis diretamente. Conversões
+  de dB exigem referência recuperável e devem permanecer auditáveis.
+- Flatness, entropia, densidade de picos e energia residual são descritores
+  globais, não classificadores automáticos de ruído ou regime físico.
+- Tendências temporais, regiões early/middle/late e change points de métricas
+  espectrais são descritores operacionais de evolução, não provas de transição
+  de regime físico, não linearidade, caos ou identificação modal.
+- Um pico espectral é uma observação matemática e não deve ser interpretado
+  automaticamente como modo físico do instrumento.
+- Resultados devem ser reproduzíveis a partir das entradas, versões, parâmetros
+  e métodos registrados.
+- Ausência de dados, estimativas indisponíveis e limitações de qualidade devem
+  ser representadas explicitamente, sem serem convertidas em valores implícitos.
+- O núcleo do BellLab deve permanecer independente do tipo de instrumento. As
+  diferenças entre instrumentos devem ser implementadas apenas através de
+  especializações de domínio, nunca através de alterações nos algoritmos
+  fundamentais.
+
+---
+
+## 7. Requisitos científicos
+
+Todo algoritmo incorporado ao BellLab deverá:
+
+- informar seus parâmetros de entrada e configuração;
+- registrar o método utilizado e sua versão;
+- permitir a reprodução completa dos resultados a partir das entradas
+  disponíveis;
+- produzir metadados suficientes para auditoria científica;
+- declarar unidades, escalas e referências dos valores produzidos;
+- registrar condições relevantes de validade, qualidade e limitações;
+- preservar a ligação entre resultado, sinal de origem e contexto experimental;
+- evitar resultados silenciosamente ambíguos ou sem proveniência.
+
+Os relatórios e exportações devem carregar informação suficiente para que um
+leitor possa identificar o conjunto de dados, as configurações e a cadeia de
+análises que conduziram a cada conclusão apresentada.
+
+---
+
+## 8. Extensibilidade
+
+A arquitetura científica do BellLab deve permitir evolução sem romper a
+reprodutibilidade ou a interpretação dos resultados existentes. Entre as
+extensões previstas estão:
+
+- comparação entre idiofones;
+- comparação entre campanhas de aquisição;
+- análise de conjuntos de idiofones;
+- análise de carrilhões e suas relações de conjunto;
+- análise integrada de vibração estrutural;
+- correlação entre dados acústicos, históricos, geométricos e de conservação;
+- exportação estruturada para artigos científicos, anexos de dados e materiais
+  suplementares;
+- integração com repositórios de dados e fluxos de revisão científica.
+
+Qualquer extensão deve respeitar as convenções desta RFC e introduzir contratos
+de dados explícitos antes de acrescentar novas análises. Quando uma extensão
+alterar o significado científico de resultados já definidos, ela deverá ser
+documentada em uma RFC complementar.

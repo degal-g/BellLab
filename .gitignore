@@ -1,0 +1,28 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# Packaging
+build/
+dist/
+*.egg-info/
+
+# Local data and generated analysis outputs
+data/*
+!data/.gitkeep
+outputs/*
+!outputs/.gitkeep
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
