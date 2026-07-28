@@ -308,6 +308,31 @@ possible split/merge events remain diagnostics only. A match is an operational
 candidate correspondence, not a preserved physical mode and not a conversion to
 `ModalMode`.
 
+Adjacent association results can then be chained deterministically across a
+contiguous nominal sequence without recomputing any local association cost:
+
+```python
+from belllab import build_cross_condition_candidate_chains
+
+chains = build_cross_condition_candidate_chains(
+    (pp_to_p, p_to_mf, mf_to_f, f_to_ff),
+)
+for chain in chains.chains:
+    print(
+        chain.chain_id,
+        [node.dynamic_label for node in chain.nodes],
+        chain.frequency_trajectory_hz,
+        chain.maximum_association_cost,
+        chain.contains_ambiguous_match,
+    )
+```
+
+Accepted adjacent matches are reused as directed edges. Partial chains,
+singleton candidates, emerging starts, disappearing ends and possible
+split/merge contexts are preserved for audit. No direct `pp -> ff` association
+is created, no gap is closed by frequency proximity, and no chain is promoted to
+`ModalMode`.
+
 Recorded excitation intensity can be characterized independently of the
 musical label:
 
