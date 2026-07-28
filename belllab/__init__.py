@@ -99,6 +99,21 @@ from belllab.response_regime import (
     describe_response_regime,
     evaluate_regime_descriptor,
 )
+from belllab.cross_condition import (
+    AdjacentDynamicConditionPair,
+    CrossConditionCandidateAssociationDiagnostic,
+    CrossConditionCandidateAssociationResult,
+    CrossConditionCandidateAssociationSettings,
+    CrossConditionCandidateMatch,
+    DisappearingCandidate,
+    EmergingCandidate,
+    PossibleCandidateMerge,
+    PossibleCandidateSplit,
+    associate_candidates_across_adjacent_conditions,
+    build_cross_condition_candidate_matches,
+    detect_possible_candidate_merges,
+    detect_possible_candidate_splits,
+)
 from belllab.within_condition import (
     CandidateReference,
     CrossRecordingAssociationDiagnostic,
@@ -266,5 +281,18 @@ __all__ = [
     "evaluate_regime_descriptor",
     "build_regime_descriptor_sequence",
     "describe_dynamic_response_regimes",
+    "AdjacentDynamicConditionPair",
+    "CrossConditionCandidateAssociationSettings",
+    "CrossConditionCandidateAssociationDiagnostic",
+    "CrossConditionCandidateMatch",
+    "DisappearingCandidate",
+    "EmergingCandidate",
+    "PossibleCandidateSplit",
+    "PossibleCandidateMerge",
+    "CrossConditionCandidateAssociationResult",
+    "associate_candidates_across_adjacent_conditions",
+    "build_cross_condition_candidate_matches",
+    "detect_possible_candidate_splits",
+    "detect_possible_candidate_merges",
 ]
 __version__ = "0.1.0"

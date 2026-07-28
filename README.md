@@ -276,6 +276,38 @@ function separates them first. Cluster frequency is the member median,
 unmatched candidates and rejected candidates remain auditable, and no cluster
 is converted to `ModalMode`.
 
+Adjacent dynamic conditions can be associated at the individual-candidate
+level under a separate conservative contract:
+
+```python
+from belllab import (
+    CrossConditionCandidateAssociationSettings,
+    associate_candidates_across_adjacent_conditions,
+)
+
+result = associate_candidates_across_adjacent_conditions(
+    pp_recording_candidates,
+    p_recording_candidates,
+    CrossConditionCandidateAssociationSettings(
+        maximum_absolute_frequency_difference_hz=2.0,
+    ),
+)
+for match in result.matches:
+    print(
+        match.lower_candidate_ref.representative_frequency_hz,
+        match.higher_candidate_ref.representative_frequency_hz,
+        match.frequency_change_classification,
+        match.association_diagnostic.total_cost,
+    )
+```
+
+Only adjacent nominal pairs are accepted: `pp -> p`, `p -> mf`, `mf -> f` and
+`f -> ff`. Unmatched lower-condition candidates are reported as disappearing
+candidates, unmatched higher-condition candidates as emerging candidates, and
+possible split/merge events remain diagnostics only. A match is an operational
+candidate correspondence, not a preserved physical mode and not a conversion to
+`ModalMode`.
+
 Recorded excitation intensity can be characterized independently of the
 musical label:
 

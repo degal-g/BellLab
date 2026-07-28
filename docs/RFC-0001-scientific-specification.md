@@ -86,6 +86,12 @@ gravação e de um idiofone percutido:
   no tempo sob critérios explícitos de comparabilidade instrumental e
   espectral, sem classificar linearidade, provar não linearidade ou associar
   candidatos individuais entre condições;
+- associação operacional, conservadora e auditável de candidatos modais
+  individuais entre condições dinâmicas nominalmente adjacentes (`pp -> p`,
+  `p -> mf`, `mf -> f`, `f -> ff`), usando candidatos já caracterizados e
+  critérios configuráveis de frequência, tau, tracking e evidência
+  pré-impacto. A correspondência resultante não estabelece identidade modal
+  física, modo preservado, prova de linearidade ou prova de não linearidade;
 - descritores operacionais de caráter espectral observado, calculados
   exclusivamente a partir de métricas já existentes e organizados por dimensões
   independentes como estrutura espectral, evolução temporal, preservação
@@ -271,6 +277,27 @@ repetições com o mesmo rótulo podem formar agrupamentos operacionais por
 compatibilidade frequencial e critérios opcionais auditáveis. A associação
 preserva candidatos sem correspondência, impede mistura entre rótulos e não
 promove agrupamentos a `ModalMode`.
+
+### Associação entre condições dinâmicas adjacentes
+
+Candidatos operacionais de duas condições dinâmicas nominalmente adjacentes
+podem ser associados individualmente por critérios explícitos e auditáveis de
+compatibilidade. A função de baixo nível aceita somente os pares `pp -> p`,
+`p -> mf`, `mf -> f` e `f -> ff`; pares invertidos, rótulos iguais, saltos
+nominais e comparações diretas `pp -> ff` não fazem parte desta política.
+
+O resultado deve preservar uma partição completa dos candidatos: correspondidos
+um-a-um, desaparecidos na condição superior ou emergentes na condição superior.
+Custos, diferenças de frequência absoluta, relativa simétrica e logarítmica,
+qualidade de ajuste, tau, ambiguidade, proximidade de limiar, margens e
+evidência pré-impacto devem permanecer disponíveis como diagnósticos
+operacionais. A ausência de correspondência confiável é um resultado válido e
+não deve ser ocultada por matching forçado.
+
+Indícios de possível divisão ou possível fusão podem ser registrados quando as
+alternativas admissíveis são próximas, mas não resolvem automaticamente
+associações um-para-muitos ou muitos-para-um. Esses diagnósticos não concluem
+divisão ou fusão física e não promovem candidatos a `ModalMode`.
 
 ### Caracterização da condição de excitação
 
