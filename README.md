@@ -333,6 +333,43 @@ split/merge contexts are preserved for audit. No direct `pp -> ff` association
 is created, no gap is closed by frequency proximity, and no chain is promoted to
 `ModalMode`.
 
+Candidate chains can be evaluated as operational modal hypotheses by explicit
+criteria, still without promoting them to physical modes:
+
+```python
+from belllab import ModalHypothesisSettings, build_modal_hypotheses
+
+hypotheses = build_modal_hypotheses(
+    chains,
+    ModalHypothesisSettings(
+        require_complete_chain=True,
+        maximum_step_absolute_frequency_change_hz=2.0,
+        require_decay_evidence=False,
+    ),
+)
+for hypothesis in hypotheses.hypotheses:
+    print(
+        hypothesis.hypothesis_id,
+        hypothesis.source_chain_id,
+        hypothesis.status,
+        hypothesis.score.normalized_score,
+        hypothesis.frequency_evidence.maximum_step_change_hz,
+    )
+```
+
+A `ModalHypothesis` means only that one operational candidate chain satisfied
+the active, configurable and auditable criteria for being treated as a
+hypothesis of the same modal component across the requested conditions. Status
+is explicit (`accepted`, `accepted_with_reservations`, `inconclusive`,
+`rejected`, `insufficient_evidence` or `invalid_input`), reasons are separated
+into support, reservations, rejection and missing evidence, and coverage,
+frequency continuity, association quality, tracking quality, tau consistency,
+pre-impact evidence and possible split/merge context remain separate evidence
+objects. A high score cannot override mandatory gates. An accepted operational
+modal hypothesis is not a proved physical mode, not a `ModalMode`, not proof of
+physical identity, not proof of linearity or nonlinearity, and does not resolve
+split or merge.
+
 Recorded excitation intensity can be characterized independently of the
 musical label:
 
