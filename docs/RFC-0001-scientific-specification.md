@@ -97,6 +97,14 @@ gravação e de um idiofone percutido:
   mf -> f -> ff`, sem recalcular custos, criar associações não adjacentes,
   fechar lacunas, resolver split/merge ou promover cadeias a identidade modal
   física, família modal ou `ModalMode`;
+- avaliação conservadora, explícita e auditável de cadeias operacionais como
+  `ModalHypothesis`, produzindo estados como aceita, aceita com ressalvas,
+  inconclusiva, rejeitada, evidência insuficiente ou entrada inválida. Uma
+  hipótese modal operacional aceita significa apenas que a cadeia satisfez
+  critérios configuráveis de cobertura, continuidade frequencial, qualidade de
+  associação, tracking, tau, evidência pré-impacto e contexto estrutural; ela
+  não comprova modo físico, identidade modal definitiva, linearidade,
+  não linearidade, divisão física ou fusão física;
 - descritores operacionais de caráter espectral observado, calculados
   exclusivamente a partir de métricas já existentes e organizados por dimensões
   independentes como estrutura espectral, evolução temporal, preservação
@@ -327,6 +335,34 @@ continua linear. O encadeamento não cria árvores, não otimiza rotas globais, 
 fecha lacunas por proximidade de frequência, não resolve divisão ou fusão e não
 transforma uma cadeia operacional em modo físico comprovado, família modal,
 identidade modal persistente ou `ModalMode`.
+
+### ModalHypothesis
+
+`ModalHypothesis` representa a avaliação operacional de uma única
+`CrossConditionCandidateChain` contra critérios explícitos, configuráveis e
+auditáveis. A cadeia operacional de candidatos não é, por si só, uma hipótese
+aceita; uma hipótese aceita também não é um modo físico comprovado. O resultado
+deve preservar evidências separadas de cobertura, continuidade frequencial,
+qualidade de associação, tracking, consistência de tau, evidência pré-impacto e
+contexto de possível split/merge, além de score normalizado, pesos, penalidades
+e razões de suporte, ressalva, rejeição e ausência de evidência.
+
+A decisão deve obedecer à precedência: entrada inválida, falha de gate
+obrigatório, evidência insuficiente, rejeição por critérios configurados,
+aceitação com ressalvas, aceitação e, por fim, inconclusão quando não houver
+base suficiente para aceitar ou rejeitar. O score é uma métrica de auditoria e
+não pode sobrepor critérios obrigatórios. Ausência de tau, evidência
+pré-impacto, margens ou métricas de tracking deve permanecer explícita e ser
+tratada conforme política configurável, nunca como zero implícito.
+
+A camada não recalcula FFT, STFT, tracking, seleção de candidatos ou associação
+entre condições; ela usa apenas candidatos já caracterizados, matches adjacentes
+aceitos, cadeias já construídas e diagnósticos existentes. Ela não cria
+associações não adjacentes, não fecha lacunas, não troca matches locais, não
+otimiza rotas globais, não resolve split ou merge e não cria `ModalMode`.
+Persistência entre condições, deslocamento de frequência e contexto de
+split/merge permanecem evidências operacionais, não provas físicas de
+identidade modal, não linearidade, divisão ou fusão.
 
 ### Caracterização da condição de excitação
 
