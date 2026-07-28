@@ -114,6 +114,15 @@ from belllab.cross_condition import (
     detect_possible_candidate_merges,
     detect_possible_candidate_splits,
 )
+from belllab.candidate_chains import (
+    AdjacentAssociationSequence,
+    CandidateChainNode,
+    CrossConditionCandidateChain,
+    CrossConditionCandidateChainResult,
+    build_cross_condition_candidate_chains,
+    summarize_cross_condition_candidate_chains,
+    validate_adjacent_association_sequence,
+)
 from belllab.within_condition import (
     CandidateReference,
     CrossRecordingAssociationDiagnostic,
@@ -294,5 +303,12 @@ __all__ = [
     "build_cross_condition_candidate_matches",
     "detect_possible_candidate_splits",
     "detect_possible_candidate_merges",
+    "AdjacentAssociationSequence",
+    "CandidateChainNode",
+    "CrossConditionCandidateChain",
+    "CrossConditionCandidateChainResult",
+    "validate_adjacent_association_sequence",
+    "build_cross_condition_candidate_chains",
+    "summarize_cross_condition_candidate_chains",
 ]
 __version__ = "0.1.0"

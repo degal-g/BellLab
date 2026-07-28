@@ -92,6 +92,11 @@ gravação e de um idiofone percutido:
   critérios configuráveis de frequência, tau, tracking e evidência
   pré-impacto. A correspondência resultante não estabelece identidade modal
   física, modo preservado, prova de linearidade ou prova de não linearidade;
+- encadeamento determinístico e auditável dessas correspondências operacionais
+  adjacentes ao longo de subsequências contíguas da ordem nominal `pp -> p ->
+  mf -> f -> ff`, sem recalcular custos, criar associações não adjacentes,
+  fechar lacunas, resolver split/merge ou promover cadeias a identidade modal
+  física, família modal ou `ModalMode`;
 - descritores operacionais de caráter espectral observado, calculados
   exclusivamente a partir de métricas já existentes e organizados por dimensões
   independentes como estrutura espectral, evolução temporal, preservação
@@ -298,6 +303,30 @@ Indícios de possível divisão ou possível fusão podem ser registrados quando
 alternativas admissíveis são próximas, mas não resolvem automaticamente
 associações um-para-muitos ou muitos-para-um. Esses diagnósticos não concluem
 divisão ou fusão física e não promovem candidatos a `ModalMode`.
+
+### Encadeamento de associações adjacentes
+
+Resultados já calculados por associação adjacente podem ser encadeados ao longo
+de uma subsequência contígua da ordem nominal `pp -> p -> mf -> f -> ff`. A
+entrada deve preservar pares conectados e válidos, sem duplicatas, lacunas,
+saltos, rótulos invertidos ou condições desconhecidas. A sequência aceita
+subconjuntos contíguos como `p -> mf -> f`, mas não cria política principal de
+associação direta entre condições não adjacentes.
+
+Cada cadeia é uma sequência operacional de candidatos conectados por matches
+adjacentes já aceitos. Candidatos sem match permanecem como cadeias unitárias;
+cadeias parciais que começam como emergentes ou terminam como desaparecidas
+mantêm esses contextos a partir dos contratos existentes. Trajetórias de
+frequência, mudanças assinadas por passo, classificações operacionais de
+deslocamento, custos locais, margens, ambiguidade e proximidade de limiar devem
+permanecer auditáveis até o match adjacente original.
+
+Contextos de possível split ou possível merge podem ser anexados a cadeias
+quando um de seus nós aparece nos diagnósticos já existentes, mas a cadeia
+continua linear. O encadeamento não cria árvores, não otimiza rotas globais, não
+fecha lacunas por proximidade de frequência, não resolve divisão ou fusão e não
+transforma uma cadeia operacional em modo físico comprovado, família modal,
+identidade modal persistente ou `ModalMode`.
 
 ### Caracterização da condição de excitação
 
