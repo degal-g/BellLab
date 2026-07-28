@@ -139,6 +139,15 @@ class CandidateReference:
     frequency_stability: float | None = None
     amplitude_tau_s: float | None = None
     amplitude_fit_r_squared: float | None = None
+    frequency_drift_hz: float | None = None
+    frequency_fit_rmse_hz: float | None = None
+    coverage_fraction: float | None = None
+    ambiguous_assignment_fraction: float | None = None
+    near_threshold_assignment_fraction: float | None = None
+    minimum_assignment_margin: float | None = None
+    preimpact_classification: str | None = None
+    structure_descriptor: str | None = None
+    diagnostics: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         _text(self.recording_id, "recording_id")
@@ -150,10 +159,29 @@ class CandidateReference:
             raise ValueError("representative_frequency_hz must be finite and positive.")
         for name in ("frequency_stability", "amplitude_tau_s", "amplitude_fit_r_squared"):
             _finite_optional(getattr(self, name), name, nonnegative=True)
+        for name in (
+            "frequency_fit_rmse_hz",
+            "minimum_assignment_margin",
+        ):
+            _finite_optional(getattr(self, name), name, nonnegative=True)
+        _finite_optional(self.frequency_drift_hz, "frequency_drift_hz")
         if self.amplitude_tau_s is not None and self.amplitude_tau_s <= 0:
             raise ValueError("amplitude_tau_s must be positive when provided.")
+        for name in (
+            "coverage_fraction",
+            "ambiguous_assignment_fraction",
+            "near_threshold_assignment_fraction",
+        ):
+            value = getattr(self, name)
+            if value is not None and (not isfinite(value) or not 0 <= value <= 1):
+                raise ValueError(f"{name} must be finite and in [0, 1].")
         if self.classification is not None:
             _text(self.classification, "classification")
+        if self.preimpact_classification is not None:
+            _text(self.preimpact_classification, "preimpact_classification")
+        if self.structure_descriptor is not None:
+            _text(self.structure_descriptor, "structure_descriptor")
+        _strings(self.diagnostics, "candidate reference diagnostics")
 
 
 @dataclass(frozen=True, slots=True)
@@ -602,6 +630,15 @@ def _reference(
         candidate.frequency_stability,
         candidate.amplitude_tau_s,
         candidate.amplitude_fit_r_squared,
+        candidate.frequency_drift_hz,
+        candidate.frequency_fit_rmse_hz,
+        candidate.coverage_fraction,
+        candidate.ambiguous_assignment_fraction,
+        candidate.near_threshold_assignment_fraction,
+        candidate.minimum_assignment_margin,
+        evidence.classification if evidence is not None else None,
+        None,
+        ("within_condition_candidate_reference",),
     )
 
 
