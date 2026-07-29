@@ -803,6 +803,54 @@ also depends on the window's main lobe and the analyzed time interval. Zero
 padding creates a denser interpolated grid but does not create information or
 improve physical separability.
 
+## Real experiment pipeline
+
+```python
+from belllab import (
+    ExperimentDefinition,
+    ExperimentPipelineSettings,
+    ExperimentRecordingDefinition,
+    analyze_experiment,
+    summarize_experiment_analysis,
+)
+
+experiment = ExperimentDefinition(
+    name="Bell impact series",
+    specimen_id="bell-001",
+    dynamic_labels=("pp", "p", "mf", "f", "ff"),
+    recordings=(
+        ExperimentRecordingDefinition("data/pp.wav", "pp", recording_id="pp_take_1"),
+        ExperimentRecordingDefinition("data/p.wav", "p", recording_id="p_take_1"),
+        ExperimentRecordingDefinition("data/mf.wav", "mf", recording_id="mf_take_1"),
+        ExperimentRecordingDefinition("data/f.wav", "f", recording_id="f_take_1"),
+        ExperimentRecordingDefinition("data/ff.wav", "ff", recording_id="ff_take_1"),
+    ),
+)
+
+result = analyze_experiment(experiment, ExperimentPipelineSettings())
+summary = summarize_experiment_analysis(result)
+```
+
+`analyze_experiment` is an orchestrator for real WAV files and metadata. It
+coordinates the existing loaders and scientific layers: temporal analysis,
+global spectrum, STFT, tracking, pre-impact evidence, excitation
+characterization, modal candidates, within-condition association, adjacent
+cross-condition association, chains, modal hypotheses, modal parameters, Q and
+bandwidth estimation, and operational evidence of possible energy
+redistribution.
+
+The pipeline preserves every stage result, skipped stage, blocked dependency,
+structured failure, file fingerprint, settings fingerprint and selected
+replicate. Multiple takes are analyzed separately; reference-take selection is
+explicit and auditable, and raw waveforms are not averaged by default. Channel
+selection is explicit and deterministic; there is no silent downmixing or
+resampling.
+
+A completed pipeline is not a physical validation by itself. It does not prove
+modal identity, linearity, nonlinearity, causality, physical energy transfer, or
+split/merge resolution. Missing conditions remain explicit gaps, and candidate
+associations are limited to nominally adjacent dynamic labels.
+
 ## Requirements
 
 - Python 3.11 or newer;

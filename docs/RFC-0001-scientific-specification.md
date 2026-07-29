@@ -616,6 +616,69 @@ incompatíveis.
 
 ## 5. Grandezas físicas
 
+### 5.1 Pipeline reprodutível de experimento real
+
+O BellLab define uma camada pública de orquestração para experimentos acústicos
+reais por meio de `ExperimentDefinition`, `ExperimentRecordingDefinition`,
+`ExperimentPipelineSettings` e `analyze_experiment(...)`. Essa camada recebe
+somente caminhos e metadados explicitamente fornecidos, carrega WAVs pela API
+canônica de I/O e coordena as camadas científicas já existentes:
+
+```text
+arquivos e metadados
+→ carregamento
+→ validação
+→ análise temporal
+→ espectro global
+→ STFT
+→ tracking
+→ pré-impacto
+→ excitação
+→ candidatos
+→ associação dentro da condição
+→ associação entre condições adjacentes
+→ cadeias
+→ hipóteses modais
+→ parâmetros
+→ Q e largura de banda
+→ evidência operacional de possível redistribuição de energia
+→ resumo estruturado
+```
+
+O pipeline é um orquestrador. Ele não duplica a lógica científica dos módulos
+subjacentes, não recalibra limiares usando o mesmo conjunto analisado e não
+usa sucesso computacional como evidência física suficiente. Uma execução
+concluída não prova validade física, identidade modal, linearidade,
+não linearidade, causalidade, transferência física de energia, acoplamento,
+hardening, softening ou resolução física de split/merge.
+
+Cada estágio registra status terminal, dependências, entradas, saídas, razões,
+diagnósticos e resultados intermediários quando disponíveis. Resultados
+parciais, falhas, bloqueios, insuficiências e estágios omitidos devem permanecer
+visíveis. `None` deve continuar representando ausência real de valor; o
+pipeline não deve fabricar zeros para metadados, estimativas ou medições
+ausentes.
+
+Condições dinâmicas seguem a ordem canônica:
+
+```text
+pp → p → mf → f → ff
+```
+
+Associações de candidatos entre condições são permitidas somente entre pares
+nominalmente adjacentes presentes. Se uma condição intermediária estiver
+ausente, a lacuna deve ser diagnosticada explicitamente; o pipeline não deve
+associar automaticamente condições não adjacentes, não deve fechar lacunas e
+não deve construir cadeias atravessando a lacuna.
+
+Múltiplas repetições de uma mesma condição são analisadas separadamente. A
+seleção de uma gravação de referência, quando configurada, deve ser auditável e
+baseada em política explícita; o pipeline não deve calcular média de formas de
+onda nem misturar sinais brutos por padrão. Seleção de canal, offsets e
+polarity devem ser explícitos, preservando caminho original, duração original,
+duração analisada, fingerprints de conteúdo e metadados disponíveis sem
+inventar informações desconhecidas.
+
 O BellLab poderá futuramente calcular, armazenar, comparar ou relatar as
 seguintes grandezas, entre outras cientificamente justificadas:
 
