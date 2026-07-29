@@ -515,6 +515,37 @@ identity. The implementation does not open WAV files, recompute FFT/STFT,
 rerun tracking, close gaps, create non-adjacent associations, fit coupled
 oscillators or promote any estimate to `ModalMode`.
 
+Controlled synthetic validation can generate known synthetic scenarios, run
+the public BellLab stages, and compare known construction parameters with the
+recovered operational results:
+
+```python
+from belllab import (
+    generate_synthetic_validation_scenario,
+    validate_synthetic_scenario,
+)
+
+scenario = generate_synthetic_validation_scenario("single_ideal")
+result = validate_synthetic_scenario(scenario)
+print(
+    result.status,
+    result.frequency_validations[0].estimated_frequency_hz,
+    result.decay_validations[0].estimated_tau_s,
+    result.q_validations[0].representative_q,
+    result.energy_exchange_validation.supported_pairs,
+)
+```
+
+The reference scenario contains a 500 Hz component with `tau = 2.0 s`, so the
+known compatible Q convention is `Q = pi * f * tau = 3141.59`. The validation
+layer records ground truth before running the pipeline, preserves missing
+estimates as `None`, reports pipeline errors per stage, and can run deterministic
+campaigns or Monte Carlo trials with explicit seeds. Synthetic recovery is only
+controlled operational validation. It is not proof of validity on real
+recordings, not a calibration of thresholds from the same results, not a
+correction of tracking with ground truth, and not evidence of physical modal
+identity, causality, split, merge, linearity or nonlinearity.
+
 Recorded excitation intensity can be characterized independently of the
 musical label:
 
