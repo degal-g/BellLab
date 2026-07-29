@@ -462,6 +462,59 @@ validation; disagreement is not proof of error, coupling or nonlinearity. The
 layer does not fit oscillators, split overlapping peaks, close gaps, create
 new associations or promote estimates to `ModalMode`.
 
+Operational evidence compatible with possible energy redistribution can be
+evaluated between already computed envelope series. The layer accepts existing
+`Envelope` or `SpectralTrack` amplitude time series, or explicit time/amplitude
+tuples, and reports trends, delayed growth, recovery, anticorrelation, lag,
+pair-energy proxy stability, alternating dominance and possible beating context:
+
+```python
+from belllab import (
+    ModalEnergyExchangeSettings,
+    ModalEnergyProxy,
+    evaluate_modal_energy_exchange_pair,
+    prepare_modal_envelope_series,
+)
+
+times_s = tuple(index * 0.05 for index in range(21))
+component_a = tuple(1.0 - 0.6 * time for time in times_s)
+component_b = tuple((1.0 - amplitude**2) ** 0.5 for amplitude in component_a)
+settings = ModalEnergyExchangeSettings(
+    normalize_envelopes=False,
+    energy_proxy=ModalEnergyProxy.AMPLITUDE_SQUARED,
+    significance_method="disabled",
+)
+
+source_a = prepare_modal_envelope_series(
+    times_s=times_s,
+    amplitudes=component_a,
+    source_id="component-a",
+    settings=settings,
+)
+source_b = prepare_modal_envelope_series(
+    times_s=times_s,
+    amplitudes=component_b,
+    source_id="component-b",
+    settings=settings,
+)
+evidence = evaluate_modal_energy_exchange_pair(source_a, source_b, settings)
+print(
+    evidence.status,
+    evidence.trend_evidence.opposed_trends,
+    evidence.correlation_evidence.zero_lag_correlation,
+    evidence.pair_energy_evidence.pair_energy_relative_range,
+)
+```
+
+For the example above the pair-energy proxy is exactly constant before
+normalization, the envelope trends are opposed and the correlation is strongly
+negative. This is still only operational evidence compatible with possible
+redistribution between components. It is not proof of physical energy transfer,
+causality, modal coupling, split, merge, nonlinearity or physical modal
+identity. The implementation does not open WAV files, recompute FFT/STFT,
+rerun tracking, close gaps, create non-adjacent associations, fit coupled
+oscillators or promote any estimate to `ModalMode`.
+
 Recorded excitation intensity can be characterized independently of the
 musical label:
 

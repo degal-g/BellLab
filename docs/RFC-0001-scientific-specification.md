@@ -487,6 +487,66 @@ não fecha lacunas, não cria associação não adjacente, não resolve split ou
 merge, não infere hardening, softening, linearidade, não linearidade,
 causalidade, troca de energia ou acoplamento modal.
 
+### ModalEnergyExchangeEvidence
+
+`ModalEnergyExchangeEvidence` representa somente evidência operacional
+compatível com possível redistribuição aparente de energia entre dois
+componentes ou hipóteses modais dentro de uma mesma gravação ou condição
+dinâmica. A camada usa envelopes de amplitude, séries temporais de tracks,
+frequências, tau, estimativas modais, diagnósticos e proveniência já
+disponíveis. Ela não abre WAV, não recalcula FFT/STFT, não refaz tracking, não
+recria candidatos ou associações, não fecha lacunas e não resolve split ou
+merge.
+
+A RFC declara explicitamente:
+
+```text
+anticorrelação entre envelopes != transferência física de energia comprovada
+crescimento tardio != excitação interna comprovada
+atraso temporal != causalidade
+batimento aparente != acoplamento modal comprovado
+conservação aproximada de soma de energias != sistema fechado
+evidência operacional de troca != prova de troca física
+```
+
+A representação de amplitude deve ser configurada, podendo usar amplitude
+linear, amplitude normalizada, amplitude em dB, potência relativa ou energia
+operacional proporcional ao quadrado da amplitude. Quando usada, a grandeza
+`E_proxy(t) proportional A(t)^2` deve ser chamada de proxy de energia,
+energia operacional ou energia relativa aparente, nunca simplesmente energia
+física. Ponderação por frequência deve ser explicitamente habilitada e
+documentada.
+
+O preparo de envelopes deve preservar tempos estritamente crescentes,
+amplitudes finitas, máscara válida, normalização, suavização opcional,
+interpolação e diagnósticos. Alinhamento temporal pode exigir eixos idênticos,
+usar interseção, interpolação linear na faixa comum ou downsampling, mas não
+pode extrapolar nem preencher lacunas longas silenciosamente. Valores ausentes
+ou inválidos permanecem explícitos e não são substituídos por zero.
+
+A evidência pode reunir tendências opostas, anticorrelação, correlação com lag,
+crescimento tardio, recuperação de amplitude, alternância de dominância,
+estabilidade aproximada do proxy de energia do par e contexto de possível
+batimento. A convenção de lag é descritiva: `lag > 0` significa que mudanças no
+componente A precedem mudanças no componente B no eixo alinhado; isso não
+declara direção causal.
+
+Significância operacional deve ser determinística, por exemplo por deslocamento
+circular ou permutação em blocos com seed explícita. O score é uma soma
+auditável de componentes configurados; gates obrigatórios prevalecem sobre o
+score. Batimento aparente deve gerar ressalva ou contexto, não aumentar
+automaticamente a evidência de redistribuição.
+
+Os estados são mutuamente exclusivos: `supported`,
+`supported_with_reservations`, `inconclusive`, `not_supported`,
+`insufficient_evidence` e `invalid_input`. A decisão deve seguir precedência
+explícita: entrada inválida, origem não permitida, envelope ausente,
+sobreposição insuficiente, amostras insuficientes, gate obrigatório falho,
+evidência insuficiente, evidência contraditória, ausência de suporte, suporte
+com ressalvas e suporte. O status não deve declarar acoplamento, causalidade,
+transferência física, linearidade, não linearidade, split, merge ou identidade
+modal física.
+
 ### Caracterização da condição de excitação
 
 O rótulo musical de dinâmica descreve uma categoria ou intenção experimental,
