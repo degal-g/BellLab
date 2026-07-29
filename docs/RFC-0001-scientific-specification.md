@@ -105,6 +105,13 @@ gravação e de um idiofone percutido:
   associação, tracking, tau, evidência pré-impacto e contexto estrutural; ela
   não comprova modo físico, identidade modal definitiva, linearidade,
   não linearidade, divisão física ou fusão física;
+- estimação operacional, conservadora e auditável de parâmetros associados a
+  `ModalHypothesis`, usando somente valores já presentes na hipótese, nos
+  candidatos caracterizados, matches aceitos, cadeias construídas e
+  diagnósticos existentes. Frequência representativa, trajetória, drift, tau,
+  taxa de decaimento e incertezas operacionais são sínteses quantitativas
+  configuráveis, não frequências modais exatas, constantes físicas invariáveis,
+  prova de identidade modal, prova de linearidade ou prova de não linearidade;
 - descritores operacionais de caráter espectral observado, calculados
   exclusivamente a partir de métricas já existentes e organizados por dimensões
   independentes como estrutura espectral, evolução temporal, preservação
@@ -363,6 +370,53 @@ otimiza rotas globais, não resolve split ou merge e não cria `ModalMode`.
 Persistência entre condições, deslocamento de frequência e contexto de
 split/merge permanecem evidências operacionais, não provas físicas de
 identidade modal, não linearidade, divisão ou fusão.
+
+### ModalParameterEstimate
+
+`ModalParameterEstimate` representa uma síntese quantitativa operacional dos
+valores já disponíveis em uma `ModalHypothesis`. A estimativa pode reunir
+frequência representativa, trajetória frequencial entre condições, variação e
+drift descritivos, tau representativo, taxa matemática de decaimento,
+incertezas operacionais, cobertura, ressalvas, insuficiências, invalidades e
+proveniência até candidatos, matches, cadeia e configuração.
+
+A camada deve preservar explicitamente:
+
+```text
+hipótese modal != modo físico comprovado
+frequência representativa != frequência modal exata
+tempo de decaimento estimado != constante física invariável
+variação entre condições != prova de não linearidade
+incerteza operacional != intervalo de confiança físico completo
+```
+
+Os estados de uma estimativa são mutuamente exclusivos: `valid`,
+`valid_with_reservations`, `partial`, `insufficient_evidence` e
+`invalid_input`. A decisão deve seguir precedência explícita: entrada inválida,
+hipótese não permitida, frequência insuficiente, tau insuficiente quando
+exigido, violação crítica de dispersão, estimativa parcial, estimativa válida
+com ressalvas e estimativa válida. O status não deve ser inferido apenas de
+score.
+
+A frequência representativa deve usar métodos de localização e peso declarados,
+como média, mediana, média ponderada, mediana ponderada, pesos uniformes,
+cobertura, qualidade de ajuste, custo inverso de associação ou combinação
+documentada. Tau deve privilegiar o domínio logarítmico e só aceitar valores
+estritamente positivos e finitos. Valores ausentes ou inválidos não podem ser
+substituídos por zero.
+
+Incertezas de frequência e tau são operacionais. Podem usar dispersão amostral,
+erro padrão, MAD escalado, bootstrap percentil determinístico com seed explícita
+ou combinações conservadoras quando incertezas individuais existirem. Esses
+intervalos não são automaticamente intervalos de confiança físicos completos.
+
+A taxa de decaimento deve declarar a convenção usada. Quando
+`A(t) = A0 exp(-t / tau)`, a taxa de decaimento de amplitude é `1 / tau`; tempos
+em dB devem derivar dessa mesma convenção e não devem ser confundidos com
+decaimento de energia. A camada de parâmetros não calcula fator de qualidade
+`Q`, largura de banda, ajuste físico de oscilador, acoplamento modal, troca de
+energia, hardening, softening, causalidade, fechamento de lacunas, associação
+não adjacente, resolução de split/merge ou promoção para `ModalMode`.
 
 ### Caracterização da condição de excitação
 
