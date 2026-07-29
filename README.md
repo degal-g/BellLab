@@ -851,6 +851,36 @@ modal identity, linearity, nonlinearity, causality, physical energy transfer, or
 split/merge resolution. Missing conditions remain explicit gaps, and candidate
 associations are limited to nominally adjacent dynamic labels.
 
+## Reproducible results export
+
+```python
+from belllab import (
+    ResultsExportSettings,
+    analyze_experiment,
+    export_experiment_results,
+    validate_experiment_export,
+)
+
+analysis = analyze_experiment(experiment, ExperimentPipelineSettings())
+export = export_experiment_results(
+    analysis,
+    ResultsExportSettings(output_directory="belllab-export"),
+)
+validation = validate_experiment_export(export)
+```
+
+The export layer serializes already computed BellLab results into deterministic
+JSON, normalized CSV tables, LaTeX fragments, Markdown summaries and a
+provenance manifest with SHA-256 checksums. It preserves status values,
+uncertainties, missing values, rejected or inconclusive results, diagnostics,
+configuration fingerprints, file fingerprints and BellLab version metadata.
+
+Exporting does not rerun the scientific pipeline, does not reopen audio for
+analysis, does not replace missing values with zero, and does not turn an
+operational modal hypothesis, Q estimate or possible energy-redistribution
+evidence into a physical conclusion. Overwrite behavior, missing-value display,
+non-finite-value handling and atomic writes are explicit settings.
+
 ## Requirements
 
 - Python 3.11 or newer;
