@@ -413,6 +413,55 @@ nonlinearity`. Missing values remain `None`; no Q factor, bandwidth,
 oscillator fit, split/merge resolution, gap closure or `ModalMode` promotion is
 performed by this layer.
 
+Operational Q-factor and bandwidth estimates are a separate layer over
+`ModalParameterEstimate`. They reuse representative frequency, representative
+tau, operational uncertainties, provenance and optional already-calculated
+spectral widths or spectra:
+
+```python
+from belllab import (
+    ModalBandwidthSource,
+    ModalQFactorEstimationSettings,
+    estimate_modal_q_factors,
+)
+
+q_result = estimate_modal_q_factors(
+    parameter_result,
+    ModalQFactorEstimationSettings(
+        bootstrap_random_seed=0,
+        combine_consistent_methods="geometric_mean",
+    ),
+    bandwidth_sources={
+        parameter_result.estimates[0].estimate_id: ModalBandwidthSource(
+            spectrum_id="bell-pp-global-spectrum",
+            center_frequency_hz=1000.0,
+            frequency_axis_hz=(990.0, 995.0, 1000.0, 1005.0, 1010.0),
+            magnitude_values=(0.2, 0.707945784, 1.0, 0.707945784, 0.2),
+            peak_frequencies_hz=(1000.0,),
+            frequency_resolution_hz=1.0,
+        ),
+    },
+)
+for estimate in q_result.estimates:
+    print(
+        estimate.status,
+        estimate.decay_q_estimate.q_decay if estimate.decay_q_estimate else None,
+        estimate.bandwidth_estimate.bandwidth_hz if estimate.bandwidth_estimate else None,
+        estimate.bandwidth_q_estimate.q_bandwidth if estimate.bandwidth_q_estimate else None,
+        estimate.representative_q,
+    )
+```
+
+The decay convention is `A(t)=A0 exp(-t/tau)` and the operational weak-damping
+summary is `Q_decay = pi * f * tau`. The bandwidth summary uses an explicitly
+declared convention, by default full amplitude width at -3 dB, and
+`Q_bandwidth = f_center / bandwidth`. Existing `SpectralPeak.width_hz` and
+`GlobalSpectralPeakMetric.width_hz` can also be reused, preserving their
+half-prominence definitions. Agreement between methods is not physical
+validation; disagreement is not proof of error, coupling or nonlinearity. The
+layer does not fit oscillators, split overlapping peaks, close gaps, create
+new associations or promote estimates to `ModalMode`.
+
 Recorded excitation intensity can be characterized independently of the
 musical label:
 

@@ -112,6 +112,10 @@ gravação e de um idiofone percutido:
   taxa de decaimento e incertezas operacionais são sínteses quantitativas
   configuráveis, não frequências modais exatas, constantes físicas invariáveis,
   prova de identidade modal, prova de linearidade ou prova de não linearidade;
+- estimativas operacionais de fator de qualidade `Q` e largura de banda
+  associadas a `ModalParameterEstimate`, derivadas de convenções matemáticas
+  explícitas, parâmetros modais operacionais e espectros ou larguras de pico já
+  calculados, sem transformar hipótese modal em modo físico comprovado;
 - descritores operacionais de caráter espectral observado, calculados
   exclusivamente a partir de métricas já existentes e organizados por dimensões
   independentes como estrutura espectral, evolução temporal, preservação
@@ -127,7 +131,6 @@ gravação e de um idiofone percutido:
 - visualização do tipo waterfall;
 - identificação modal;
 - rastreamento modal ao longo do tempo;
-- fator de qualidade modal (Q);
 - energia modal;
 - comparação entre gravações;
 - geração automática de relatórios científicos.
@@ -417,6 +420,72 @@ decaimento de energia. A camada de parâmetros não calcula fator de qualidade
 `Q`, largura de banda, ajuste físico de oscilador, acoplamento modal, troca de
 energia, hardening, softening, causalidade, fechamento de lacunas, associação
 não adjacente, resolução de split/merge ou promoção para `ModalMode`.
+
+### ModalQFactorEstimate
+
+`ModalQFactorEstimate` representa uma estimativa operacional de fator de
+qualidade associada a uma `ModalParameterEstimate`. A camada pode combinar dois
+métodos independentes quando ambos estiverem disponíveis:
+
+- `Q_decay`, derivado de frequência representativa e tau representativo;
+- `Q_bandwidth`, derivado de frequência central e largura de banda espectral.
+
+Esses valores são condicionados às hipóteses do método e à configuração ativa.
+A RFC declara explicitamente:
+
+```text
+hipótese modal != modo físico comprovado
+Q estimado por decaimento != Q físico exato
+Q estimado por largura de banda != Q físico exato
+concordância entre métodos != validação física definitiva
+discordância entre métodos != prova de erro ou não linearidade
+```
+
+A convenção de decaimento é a mesma da camada de parâmetros:
+`A(t) = A0 exp(-t / tau)`. Para um resumo operacional de oscilador levemente
+amortecido, a relação usada é `Q_decay = pi * f * tau`, em que `f` está em hertz
+e `tau` é a constante de decaimento de amplitude em segundos. Essa relação deve
+registrar suas hipóteses: decaimento aproximadamente exponencial, amortecimento
+fraco, componente suficientemente isolada e frequência aproximadamente estável
+no intervalo analisado. Tau de amplitude não deve ser confundido com tau de
+energia.
+
+A largura de banda deve declarar sua definição. A convenção padrão é largura
+total a -3 dB em amplitude, isto é, nível de corte `1/sqrt(2)` da amplitude de
+pico. Quando a largura vier de `SpectralPeak.width_hz` ou
+`GlobalSpectralPeakMetric.width_hz`, a estimativa deve preservar a definição
+original de meia proeminência, em amplitude do espectro de origem ou potência
+linear canônica, respectivamente. A camada não deve misturar amplitude e
+potência, não deve extrapolar cruzamentos, não deve aceitar largura zero e não
+deve usar bins extremos como cruzamentos silenciosos.
+
+O fator por largura usa somente a relação `Q_bandwidth = f_center / bandwidth`
+com frequência e largura estritamente positivas e finitas. A resolução
+espectral deve ser diagnosticada por `bandwidth_hz / frequency_resolution_hz`,
+com classificação operacional como bem resolvido, marginal, limitado por
+resolução ou não resolvido segundo limiares configuráveis. Picos vizinhos devem
+ser diagnosticados por distância e fração de sobreposição, sem tentar separar
+picos sobrepostos ou ajustar múltiplas Lorentzianas.
+
+A comparação entre métodos deve usar diferença relativa simétrica,
+`abs(Q1 - Q2) / ((Q1 + Q2) / 2)`, e diferença logarítmica com valores positivos.
+Combinação de métodos só é permitida por política explícita, como média simples,
+média geométrica, média ponderada por incerteza, preferência declarada ou
+nenhuma combinação. Métodos inconsistentes não devem ser combinados por padrão.
+
+Os estados são mutuamente exclusivos: `valid`, `valid_with_reservations`,
+`partial`, `inconclusive`, `insufficient_evidence` e `invalid_input`. A decisão
+deve seguir precedência explícita: entrada inválida, status de origem não
+permitido, ausência dos dois métodos, método obrigatório ausente, método
+disponível porém inválido, inconsistência forte entre métodos, método único
+válido, métodos válidos com ressalvas, métodos válidos consistentes e resultado
+válido. O status não deve ser determinado por score nem promover a estimativa a
+`ModalMode`.
+
+A camada não abre WAV, não recalcula FFT, STFT, tracking, candidatos ou matches,
+não fecha lacunas, não cria associação não adjacente, não resolve split ou
+merge, não infere hardening, softening, linearidade, não linearidade,
+causalidade, troca de energia ou acoplamento modal.
 
 ### Caracterização da condição de excitação
 
