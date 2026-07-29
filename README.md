@@ -370,6 +370,49 @@ modal hypothesis is not a proved physical mode, not a `ModalMode`, not proof of
 physical identity, not proof of linearity or nonlinearity, and does not resolve
 split or merge.
 
+Operational parameter estimates can be derived from already-built modal
+hypotheses without reopening audio, recomputing spectra, rebuilding tracks,
+creating non-adjacent matches or changing the hypotheses:
+
+```python
+from belllab import (
+    ModalParameterEstimationSettings,
+    ParameterLocationMethod,
+    ParameterUncertaintyMethod,
+    estimate_modal_parameters,
+)
+
+parameter_result = estimate_modal_parameters(
+    hypotheses,
+    ModalParameterEstimationSettings(
+        frequency_location_method=ParameterLocationMethod.MEDIAN,
+        tau_location_method=ParameterLocationMethod.GEOMETRIC_MEAN,
+        frequency_uncertainty_method=ParameterUncertaintyMethod.CONSERVATIVE,
+        bootstrap_random_seed=0,
+    ),
+)
+for estimate in parameter_result.estimates:
+    print(
+        estimate.status,
+        estimate.frequency_estimate.representative_frequency_hz,
+        estimate.frequency_trajectory.total_signed_change_hz,
+        estimate.decay_estimate.representative_tau_s,
+        estimate.decay_rate_estimate.amplitude_decay_rate_per_s,
+        estimate.provenance.settings_fingerprint,
+    )
+```
+
+`ModalParameterEstimate` is an auditable quantitative summary of values already
+available in a `ModalHypothesis`. It may report representative frequency,
+frequency trajectory, drift summaries, tau, decay rate, operational
+uncertainty, coverage, reservations and provenance. These outputs preserve the
+distinctions `modal hypothesis != proved physical mode`,
+`representative frequency != exact modal frequency`, `estimated tau !=
+invariant physical constant` and `condition variation != proof of
+nonlinearity`. Missing values remain `None`; no Q factor, bandwidth,
+oscillator fit, split/merge resolution, gap closure or `ModalMode` promotion is
+performed by this layer.
+
 Recorded excitation intensity can be characterized independently of the
 musical label:
 
