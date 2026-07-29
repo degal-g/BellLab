@@ -116,6 +116,13 @@ gravação e de um idiofone percutido:
   associadas a `ModalParameterEstimate`, derivadas de convenções matemáticas
   explícitas, parâmetros modais operacionais e espectros ou larguras de pico já
   calculados, sem transformar hipótese modal em modo físico comprovado;
+- validação sintética científica controlada, gerando cenários com verdade
+  conhecida por construção e comparando essa verdade com resultados
+  recuperados por APIs públicas do BellLab. Essa validação testa comportamento
+  operacional em cenários controlados; ela não prova validade geral em
+  gravações reais, não usa a verdade sintética como entrada oculta dos
+  estimadores e permite que cenários não identificáveis terminem corretamente
+  como insuficientes ou inconclusivos;
 - descritores operacionais de caráter espectral observado, calculados
   exclusivamente a partir de métricas já existentes e organizados por dimensões
   independentes como estrutura espectral, evolução temporal, preservação
@@ -546,6 +553,42 @@ evidência insuficiente, evidência contraditória, ausência de suporte, suport
 com ressalvas e suporte. O status não deve declarar acoplamento, causalidade,
 transferência física, linearidade, não linearidade, split, merge ou identidade
 modal física.
+
+### Validação sintética científica
+
+`SyntheticValidationScenario` representa um cenário controlado cujo conteúdo é
+conhecido por construção antes da análise. `SyntheticGroundTruth` preserva
+sinal limpo, ruído, sinal observado, frequências verdadeiras sintéticas, tau,
+Q pela convenção compatível `Q = pi * f * tau`, largura de banda conhecida
+quando identificável, presenças, associações, cadeias e pares de evidência
+operacional esperados. Essa verdade sintética não é derivada do resultado do
+BellLab.
+
+`SyntheticPipelineOutput` registra a execução das APIs públicas disponíveis:
+análise temporal, FFT estacionária, detecção de picos, STFT, picos por quadro,
+tracking, caracterização de candidatos e, quando as entradas existem, camadas
+de associação, cadeias, hipóteses, parâmetros, Q e evidência operacional de
+possível redistribuição de energia. Falhas de estágio devem permanecer
+explícitas; uma execução parcial configurada não pode ocultar o estágio ausente.
+
+As validações sintéticas comparam `verdade sintética conhecida` contra
+`resultado recuperado pelo BellLab` por métricas de frequência, trajetória,
+drift, tau, Q, largura de banda, tracking, candidatos, associações, cadeias,
+hipóteses e evidência operacional de possível redistribuição de energia.
+Campanhas e Monte Carlo usam seeds explícitas e ordem determinística. A camada
+não deve calibrar thresholds usando o resultado da mesma realização, corrigir
+tracking com a verdade, usar valores verdadeiros como entrada oculta dos
+estimadores, resolver split/merge físico, declarar causalidade ou promover
+qualquer sucesso sintético a `ModalMode`.
+
+Os estados são mutuamente exclusivos: `passed`,
+`passed_with_reservations`, `failed`, `inconclusive`,
+`insufficient_evidence`, `invalid_scenario` e `pipeline_error`. Cenários
+fundamentalmente não identificáveis podem ser classificados corretamente como
+insuficientes ou inconclusivos. Recuperação correta em sinal sintético não
+garante validade em dados reais; erro baixo em um cenário não implica robustez
+geral; aprovação de threshold não é prova física; falha de recuperação não é
+falha universal do método.
 
 ### Caracterização da condição de excitação
 
