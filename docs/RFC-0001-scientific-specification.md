@@ -679,6 +679,33 @@ polarity devem ser explícitos, preservando caminho original, duração original
 duração analisada, fingerprints de conteúdo e metadados disponíveis sem
 inventar informações desconhecidas.
 
+### 5.5 Exportação reproduzível de resultados
+
+O BellLab define uma camada pública de exportação reproduzível para resultados
+já calculados, em especial `ExperimentAnalysisResult`. Essa camada transforma
+contratos científicos existentes em representações estruturadas, ordenadas e
+auditáveis, como JSON, CSV, fragmentos LaTeX, Markdown e manifesto de
+proveniência. A exportação preserva IDs, status, incertezas, ausências,
+ressalvas, invalidades, diagnósticos, configurações, fingerprints de arquivos e
+versão do BellLab.
+
+Exportação bem-sucedida não implica validade científica do resultado. Uma tabela
+formatada não é evidência física suficiente, um valor ausente não é zero, uma
+hipótese modal não é um modo físico comprovado e evidência operacional de
+possível redistribuição de energia não é transferência física comprovada. A
+camada de exportação não deve recalcular espectros, tracking, candidatos,
+hipóteses, parâmetros, Q ou energia operacional, nem alterar os resultados de
+origem para melhorar a apresentação.
+
+Arquivos exportados devem ter nomes determinísticos, política explícita de
+sobrescrita, escrita atômica quando configurada, checksums de conteúdo e
+manifesto escrito por último. JSON deve ser padronizado e não deve conter tokens
+não finitos como `NaN` ou `Infinity`; valores não finitos exigem política
+explícita. CSVs devem ser normalizados em tabelas com cabeçalhos estáveis,
+chaves primárias e chaves estrangeiras preservadas. Tabelas LaTeX e Markdown
+são camadas de apresentação e não devem arredondar ou modificar os valores
+armazenados no modelo normalizado.
+
 O BellLab poderá futuramente calcular, armazenar, comparar ou relatar as
 seguintes grandezas, entre outras cientificamente justificadas:
 
