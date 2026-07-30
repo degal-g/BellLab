@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "belllab"
-version = "0.1.0"
+version = "0.13.0"
 description = "Open-source framework for acoustic analysis of struck idiophones."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -25,6 +25,9 @@ dependencies = ["numpy>=1.24", "scipy>=1.10", "soundfile>=0.12", "matplotlib>=3.
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
+
+[project.scripts]
+belllab = "belllab.cli:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

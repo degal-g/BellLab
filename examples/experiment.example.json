@@ -1,0 +1,58 @@
+{
+  "experiment": {
+    "dynamic_labels": [
+      "pp",
+      "p",
+      "mf",
+      "f",
+      "ff"
+    ],
+    "experiment_id": "example-bell-001",
+    "instrument_type": "bell",
+    "name": "BellLab CLI example experiment"
+  },
+  "pipeline": {
+    "allow_partial_results": true,
+    "continue_after_stage_failure": true,
+    "run_modal_energy_exchange": true,
+    "run_stft": true,
+    "run_tracking": true
+  },
+  "recordings": [
+    {
+      "channel": 0,
+      "dynamic_label": "pp",
+      "file_path": "audio/pp.wav",
+      "recording_id": "example-pp-01",
+      "take_index": 0
+    },
+    {
+      "channel": 0,
+      "dynamic_label": "p",
+      "file_path": "audio/p.wav",
+      "recording_id": "example-p-01",
+      "take_index": 0
+    },
+    {
+      "channel": 0,
+      "dynamic_label": "mf",
+      "file_path": "audio/mf.wav",
+      "recording_id": "example-mf-01",
+      "take_index": 0
+    },
+    {
+      "channel": 0,
+      "dynamic_label": "f",
+      "file_path": "audio/f.wav",
+      "recording_id": "example-f-01",
+      "take_index": 0
+    },
+    {
+      "channel": 0,
+      "dynamic_label": "ff",
+      "file_path": "audio/ff.wav",
+      "recording_id": "example-ff-01",
+      "take_index": 0
+    }
+  ]
+}

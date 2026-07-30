@@ -2562,4 +2562,4 @@ def _optional_text(value: str | None, name: str) -> None:
 
 def _belllab_version() -> str:
     module = sys.modules.get("belllab")
-    return str(getattr(module, "__version__", "0.1.0"))
+    return str(getattr(module, "__version__", "0+unknown"))

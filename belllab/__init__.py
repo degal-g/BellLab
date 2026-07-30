@@ -4,6 +4,8 @@ O pacote expõe modelos de domínio estáveis. Os módulos de análise serão
 implementados incrementalmente, sem quebrar esta interface pública.
 """
 
+from importlib.metadata import PackageNotFoundError, version as package_version
+
 from belllab.comparison import BellComparison, Experiment
 from belllab.config import (
     AnalysisSettings,
@@ -423,6 +425,33 @@ from belllab.scientific_report import (
     scientific_report_settings_fingerprint,
     summarize_scientific_report,
     validate_scientific_report,
+)
+from belllab.cli import (
+    BellLabCLICommand,
+    BellLabCLIConfigurationError,
+    BellLabCLIError,
+    BellLabCLIExecutionError,
+    BellLabCLIExitCode,
+    BellLabCLIOutputFormat,
+    BellLabCLIResult,
+    BellLabCLISettings,
+    build_cli_parser,
+    cli_settings_fingerprint,
+    format_cli_json_output,
+    format_cli_text_output,
+    load_cli_configuration,
+    load_serialized_analysis_result,
+    load_serialized_export_result,
+    load_serialized_figure_collection,
+    load_serialized_report_result,
+    main,
+    map_result_status_to_exit_code,
+    merge_cli_configuration,
+    parse_cli_recording_spec,
+    run_cli,
+    serialize_cli_configuration,
+    validate_cli_configuration,
+    write_cli_configuration,
 )
 from belllab.within_condition import (
     CandidateReference,
@@ -894,5 +923,33 @@ __all__ = [
     "summarize_scientific_report",
     "scientific_report_settings_fingerprint",
     "scientific_report_artifact_checksum",
+    "BellLabCLICommand",
+    "BellLabCLIOutputFormat",
+    "BellLabCLIExitCode",
+    "BellLabCLIResult",
+    "BellLabCLISettings",
+    "BellLabCLIError",
+    "BellLabCLIConfigurationError",
+    "BellLabCLIExecutionError",
+    "build_cli_parser",
+    "run_cli",
+    "main",
+    "load_cli_configuration",
+    "validate_cli_configuration",
+    "merge_cli_configuration",
+    "serialize_cli_configuration",
+    "write_cli_configuration",
+    "cli_settings_fingerprint",
+    "map_result_status_to_exit_code",
+    "format_cli_text_output",
+    "format_cli_json_output",
+    "parse_cli_recording_spec",
+    "load_serialized_analysis_result",
+    "load_serialized_export_result",
+    "load_serialized_figure_collection",
+    "load_serialized_report_result",
 ]
-__version__ = "0.1.0"
+try:
+    __version__ = package_version("belllab")
+except PackageNotFoundError:
+    __version__ = "0+unknown"

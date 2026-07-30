@@ -1,0 +1,50 @@
+# BellLab example experiment configuration.
+# Replace placeholder paths with explicit WAV files before running analysis.
+
+[experiment]
+experiment_id = "example-bell-001"
+name = "BellLab CLI example experiment"
+instrument_type = "bell"
+dynamic_labels = ["pp", "p", "mf", "f", "ff"]
+
+[[recordings]]
+recording_id = "example-pp-01"
+dynamic_label = "pp"
+file_path = "audio/pp.wav"
+channel = 0
+take_index = 0
+
+[[recordings]]
+recording_id = "example-p-01"
+dynamic_label = "p"
+file_path = "audio/p.wav"
+channel = 0
+take_index = 0
+
+[[recordings]]
+recording_id = "example-mf-01"
+dynamic_label = "mf"
+file_path = "audio/mf.wav"
+channel = 0
+take_index = 0
+
+[[recordings]]
+recording_id = "example-f-01"
+dynamic_label = "f"
+file_path = "audio/f.wav"
+channel = 0
+take_index = 0
+
+[[recordings]]
+recording_id = "example-ff-01"
+dynamic_label = "ff"
+file_path = "audio/ff.wav"
+channel = 0
+take_index = 0
+
+[pipeline]
+run_stft = true
+run_tracking = true
+run_modal_energy_exchange = true
+continue_after_stage_failure = true
+allow_partial_results = true
