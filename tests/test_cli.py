@@ -24,6 +24,7 @@ from belllab import (
     ScientificReportStatus,
     ScientificVisualizationStatus,
     SyntheticValidationStatus,
+    __version__,
     build_cli_parser,
     cli_settings_fingerprint,
     format_cli_json_output,
@@ -145,12 +146,15 @@ def test_unknown_command_is_usage_error() -> None:
 
 
 def test_version_command_text_and_json() -> None:
+    assert __version__ == "0.13.0"
     text_result = run_cli(("version",))
     assert text_result.exit_code is BellLabCLIExitCode.COMPLETED
-    assert "BellLab" in format_cli_text_output(text_result)
+    text_output = format_cli_text_output(text_result)
+    assert "BellLab 0.13.0" in text_output
+    assert "CLI Schema Version: 1.0" in text_output
     json_result = run_cli(("version", "--output-format", "json"))
     decoded = json.loads(format_cli_json_output(json_result))
-    assert decoded["payload"]["belllab_version"] == "0.1.0"
+    assert decoded["payload"]["belllab_version"] == "0.13.0"
     assert decoded["payload"]["export_schema_version"] == "1.0"
     assert decoded["payload"]["report_schema_version"] == "1.0"
 

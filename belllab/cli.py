@@ -669,7 +669,8 @@ def format_cli_text_output(result: BellLabCLIResult) -> str:
         lines = [result.message]
         for key in ("export_schema_version", "report_schema_version", "cli_schema_version", "python", "platform"):
             if key in result.payload:
-                lines.append(f"{key.replace('_', ' ').title()}: {result.payload[key]}")
+                label = "CLI Schema Version" if key == "cli_schema_version" else key.replace("_", " ").title()
+                lines.append(f"{label}: {result.payload[key]}")
         return "\n".join(lines)
     lines = [
         f"BellLab {result.command.value if isinstance(result.command, BellLabCLICommand) else result.command}: {result.status}",
@@ -1591,7 +1592,7 @@ def _file_checksum(path: str | Path) -> str:
 
 def _belllab_version() -> str:
     module = sys.modules.get("belllab")
-    return str(getattr(module, "__version__", "0.1.0"))
+    return str(getattr(module, "__version__", "0+unknown"))
 
 
 def _to_jsonable(value: object) -> object:

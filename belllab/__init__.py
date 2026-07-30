@@ -4,6 +4,8 @@ O pacote expõe modelos de domínio estáveis. Os módulos de análise serão
 implementados incrementalmente, sem quebrar esta interface pública.
 """
 
+from importlib.metadata import PackageNotFoundError, version as package_version
+
 from belllab.comparison import BellComparison, Experiment
 from belllab.config import (
     AnalysisSettings,
@@ -947,4 +949,7 @@ __all__ = [
     "load_serialized_figure_collection",
     "load_serialized_report_result",
 ]
-__version__ = "0.1.0"
+try:
+    __version__ = package_version("belllab")
+except PackageNotFoundError:
+    __version__ = "0+unknown"
