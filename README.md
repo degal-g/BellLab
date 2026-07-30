@@ -951,6 +951,40 @@ evidence, modal hypotheses are not proven physical modes, trajectories do not
 prove nonlinearity, and operational energy-redistribution evidence is not
 confirmed physical transfer.
 
+## Command-line interface
+
+BellLab also exposes a stable public CLI as a thin adapter over the same public
+Python APIs:
+
+```bash
+belllab version
+belllab analyze --config experiment.toml
+belllab export --analysis result.json --json --csv --output-dir results
+belllab visualize --analysis result.json --all --output-dir figures
+belllab report --analysis result.json --markdown --latex --output-dir report
+belllab validate-synthetic --all-scenarios
+```
+
+The same interface is available without an installed console script:
+
+```bash
+python3 -m belllab --help
+python3 -m belllab analyze --recording pp=audio/pp.wav --dry-run
+```
+
+The CLI supports JSON and TOML configuration, quick `LABEL=PATH` recording
+definitions, effective-configuration printing, dry runs, result bundles,
+inspection, structured JSON output, quiet mode, explicit overwrite policies and
+documented exit codes. Exit code `0` means completed, `1` completed with
+reservations, `2` invalid usage/configuration, `3` invalid input, `4`
+insufficient evidence, `5` partial execution, `6` stage failure, `7`
+unexpected internal error, `8` artifact validation failure and `9` report
+compilation failure.
+
+Command completion is not implemented in this round. A command finishing with
+exit code `0` is not a physical proof, and results with reservations,
+insufficiencies or failures are not reduced silently to success.
+
 ## Requirements
 
 - Python 3.11 or newer;

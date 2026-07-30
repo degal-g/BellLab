@@ -768,6 +768,40 @@ preservar resultados rejeitados, inválidos, inconclusivos, insuficientes e
 parciais quando configurada para incluí-los, mantendo ausências como ausência,
 nunca como zero implícito.
 
+### 5.8 Interface pública de linha de comando
+
+O BellLab define uma interface pública de linha de comando para tornar as APIs
+existentes acessíveis em fluxos reprodutíveis sem exigir scripts Python
+ad hoc. A CLI coordena comandos como `analyze`, `export`, `visualize`,
+`report`, `validate-synthetic`, `inspect` e `version`, mapeando argumentos e
+arquivos JSON/TOML para os contratos públicos já definidos.
+
+A CLI é uma camada de acesso e orquestração. Ela não adiciona inferência
+científica, não duplica estimadores, não reabre arquivos de áudio fora do
+comando de análise, não recalcula etapas em comandos de exportação,
+visualização ou relatório, e não altera silenciosamente configurações
+científicas. Sucesso computacional, exit code `0` ou geração de artefato não
+devem ser interpretados como prova física.
+
+Os comandos devem preservar status, razões, ressalvas, insuficiências, falhas,
+IDs, fingerprints, caminhos de artefatos, versão e proveniência. A saída JSON
+deve ser estruturada e válida; a saída humana deve permanecer estável e
+conservadora; o modo quiet deve preservar exit codes significativos. Resultados
+com ressalvas, insuficiência ou falha não podem ser reduzidos silenciosamente a
+sucesso.
+
+Configuração por arquivo deve seguir precedência explícita:
+
+```text
+defaults < arquivo de configuração < opções da linha de comando
+```
+
+Dry-runs devem validar argumentos e planejar artefatos sem executar análise
+pesada ou escrever arquivos. A CLI não deve procurar gravações fora dos caminhos
+informados, não deve modificar WAVs, não deve reamostrar ou misturar canais
+silenciosamente, não deve criar associações não adjacentes e não deve resolver
+split ou merge.
+
 O BellLab poderá futuramente calcular, armazenar, comparar ou relatar as
 seguintes grandezas, entre outras cientificamente justificadas:
 

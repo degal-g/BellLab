@@ -26,6 +26,9 @@ dependencies = ["numpy>=1.24", "scipy>=1.10", "soundfile>=0.12", "matplotlib>=3.
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
 
+[project.scripts]
+belllab = "belllab.cli:main"
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
