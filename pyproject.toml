@@ -21,7 +21,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Acoustics",
 ]
-dependencies = ["numpy>=1.24", "scipy>=1.10", "soundfile>=0.12"]
+dependencies = ["numpy>=1.24", "scipy>=1.10", "soundfile>=0.12", "matplotlib>=3.5"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]

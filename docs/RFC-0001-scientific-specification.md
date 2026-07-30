@@ -706,6 +706,39 @@ chaves primárias e chaves estrangeiras preservadas. Tabelas LaTeX e Markdown
 são camadas de apresentação e não devem arredondar ou modificar os valores
 armazenados no modelo normalizado.
 
+### 5.6 Visualizações científicas reproduzíveis
+
+O BellLab define uma camada pública de visualizações científicas reproduzíveis
+para resultados já calculados, em especial `ExperimentAnalysisResult` e os
+contratos de espectro, STFT, tracking, candidatos, cadeias, hipóteses,
+parâmetros, Q, largura de banda, evidência operacional de possível
+redistribuição de energia e validação sintética. Essa camada representa
+resultados operacionais em figuras determinísticas e auditáveis; ela não
+reabre WAVs, não recalcula FFT, não recalcula STFT, não refaz tracking, não
+recaracteriza candidatos e não altera estimativas de origem.
+
+As visualizações devem declarar unidades, escalas, status, ressalvas,
+incertezas, ausências e proveniência. Lacunas temporais, condições ausentes e
+associações inexistentes devem permanecer visíveis; uma linha desenhada entre
+pontos não pode ser usada para declarar continuidade física. Cores, marcadores
+e estilos devem ser determinísticos, reutilizar a ordem dinâmica canônica
+`pp -> p -> mf -> f -> ff` quando aplicável, e não devem ser o único codificador
+de significado.
+
+Figuras de hipóteses modais devem usar explicitamente a noção de hipótese
+operacional, não `modo físico comprovado`. Figuras de trajetória frequencial
+podem mostrar slope ordinal ou mudança entre condições, mas não devem declarar
+hardening, softening, linearidade ou não linearidade. Figuras de evidência
+operacional de possível redistribuição de energia podem mostrar envelopes,
+proxy de energia, correlação e lag, mas não devem afirmar transferência física,
+causalidade, acoplamento ou conversão modal.
+
+Uma visualização bem-sucedida não acrescenta evidência física além dos dados,
+estimadores, diagnósticos e configurações de origem. Figura visualmente
+convincente não é evidência científica suficiente; anticorrelação visual não é
+transferência física comprovada; validação sintética visualizada não garante
+validade geral em gravações reais.
+
 O BellLab poderá futuramente calcular, armazenar, comparar ou relatar as
 seguintes grandezas, entre outras cientificamente justificadas:
 
