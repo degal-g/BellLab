@@ -739,6 +739,35 @@ convincente não é evidência científica suficiente; anticorrelação visual n
 transferência física comprovada; validação sintética visualizada não garante
 validade geral em gravações reais.
 
+### 5.7 Relatório científico reproduzível
+
+O BellLab define uma camada pública de geração de relatório científico
+reproduzível para organizar resultados existentes, tabelas exportadas e figuras
+já geradas. Essa camada cria documento normalizado, Markdown, LaTeX, manifesto,
+inventário de seções, referências cruzadas, tabelas integradas, figuras
+integradas, apêndices, proveniência e limitações. A compilação de PDF é
+opcional e depende de ferramenta LaTeX local compatível.
+
+O relatório é uma camada de organização e apresentação. Ele não reabre WAVs,
+não recalcula FFT, STFT, tracking, candidatos, associações, hipóteses,
+parâmetros, Q, largura de banda, tabelas ou figuras. Também não altera status,
+razões, diagnósticos, estimativas ou interpretações de origem para produzir uma
+narrativa mais favorável.
+
+A narrativa automática deve ser estritamente factual. Ela pode declarar
+contagens, IDs, status, disponibilidade de parâmetros, discordâncias entre
+métodos, lacunas e limitações. Ela não deve declarar causalidade, identidade
+modal física, transferência física de energia, hardening, softening,
+linearidade, não linearidade, resolução física de split/merge ou validade
+experimental universal.
+
+Relatório compilado não é conclusão científica comprovada. Figura incluída não
+é evidência adicional. Tabela completa não implica dados suficientes. Pipeline
+concluído não prova validade física do experimento. A camada de relatório deve
+preservar resultados rejeitados, inválidos, inconclusivos, insuficientes e
+parciais quando configurada para incluí-los, mantendo ausências como ausência,
+nunca como zero implícito.
+
 O BellLab poderá futuramente calcular, armazenar, comparar ou relatar as
 seguintes grandezas, entre outras cientificamente justificadas:
 

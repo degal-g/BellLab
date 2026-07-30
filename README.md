@@ -921,6 +921,36 @@ evidence: modal hypotheses remain hypotheses, trajectories do not prove
 nonlinearity, and visual anticorrelation is not confirmed physical energy
 transfer.
 
+## Reproducible scientific report
+
+```python
+from belllab import ScientificReportSettings, create_scientific_report
+
+report = create_scientific_report(
+    analysis,
+    export,
+    figures,
+    ScientificReportSettings(
+        output_directory="belllab-report",
+        title="BellLab scientific report",
+    ),
+)
+```
+
+The report layer organizes already computed analysis results, exported tables
+and generated figures into deterministic Markdown, LaTeX, a provenance
+manifest, cross references, limitations and optional PDF compilation when a
+local LaTeX tool is available. It validates compatible analysis IDs,
+experiment IDs and checksums before rendering when configured to do so.
+
+Report generation does not rerun the scientific pipeline, does not regenerate
+figures, does not rebuild tables, and does not replace missing values with
+zero. Its automatic text is factual and conservative: a compiled report is not
+a scientific conclusion by itself, included figures are not additional
+evidence, modal hypotheses are not proven physical modes, trajectories do not
+prove nonlinearity, and operational energy-redistribution evidence is not
+confirmed physical transfer.
+
 ## Requirements
 
 - Python 3.11 or newer;
