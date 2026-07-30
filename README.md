@@ -881,6 +881,46 @@ operational modal hypothesis, Q estimate or possible energy-redistribution
 evidence into a physical conclusion. Overwrite behavior, missing-value display,
 non-finite-value handling and atomic writes are explicit settings.
 
+## Reproducible scientific visualizations
+
+```python
+from belllab import (
+    ScientificFigureType,
+    ScientificVisualizationSettings,
+    create_experiment_visualizations,
+)
+
+figures = create_experiment_visualizations(
+    analysis,
+    ScientificVisualizationSettings(
+        output_directory="belllab-figures",
+        formats=("png", "svg"),
+        figure_types=(
+            ScientificFigureType.WAVEFORM,
+            ScientificFigureType.GLOBAL_SPECTRUM,
+            ScientificFigureType.MODAL_HYPOTHESES,
+            ScientificFigureType.MODAL_PARAMETERS,
+            ScientificFigureType.MODAL_Q_FACTORS,
+        ),
+    ),
+)
+```
+
+The visualization layer renders already computed BellLab results with
+Matplotlib's non-interactive backend. It can create deterministic figures for
+waveforms, envelopes, decay estimates, spectra, peaks, spectrograms, tracks,
+candidates, associations, chains, modal hypotheses, parameter trajectories, Q,
+bandwidth, dynamic-condition comparison, operational evidence of possible
+energy redistribution, synthetic validation and experiment summaries.
+
+Figures preserve source IDs, statuses, uncertainties, gaps, missing values,
+reservations, invalid results and provenance. They do not recalculate FFT,
+STFT, tracking, candidates, associations, modal parameters, Q or energy
+evidence. A visually convincing figure is not treated as additional scientific
+evidence: modal hypotheses remain hypotheses, trajectories do not prove
+nonlinearity, and visual anticorrelation is not confirmed physical energy
+transfer.
+
 ## Requirements
 
 - Python 3.11 or newer;
