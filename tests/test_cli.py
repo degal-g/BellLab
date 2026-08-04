@@ -128,6 +128,15 @@ def test_public_cli_contracts_are_importable() -> None:
     assert callable(format_cli_json_output)
 
 
+def test_cli_result_default_payload_is_immutable_and_not_shared() -> None:
+    first = BellLabCLIResult("version", 0, "completed", "ok")
+    second = BellLabCLIResult("version", 0, "completed", "ok")
+    assert dict(first.payload) == {}
+    assert first.payload is not second.payload
+    with pytest.raises(TypeError):
+        first.payload["unexpected"] = True  # type: ignore[index]
+
+
 def test_parser_exposes_required_subcommands() -> None:
     help_text = build_cli_parser().format_help()
     for command in ("analyze", "export", "visualize", "report", "validate-synthetic", "inspect", "version"):

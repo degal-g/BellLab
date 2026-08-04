@@ -999,6 +999,13 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
+## Continuous integration
+
+GitHub Actions runs on pushes and pull requests targeting `main`, testing
+Python 3.10 and 3.11. It runs the test suite, builds wheel and sdist, checks
+package metadata, and smoke-tests the installed CLI. It does not publish
+packages automatically.
+
 ## Structure
 
 - `belllab.recording`: generalized recording model;
