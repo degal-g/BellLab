@@ -12,7 +12,7 @@ import argparse
 import base64
 from collections.abc import Mapping, Sequence
 import copyreg
-from dataclasses import dataclass, fields, is_dataclass, replace
+from dataclasses import dataclass, field, fields, is_dataclass, replace
 from enum import Enum, IntEnum
 import hashlib
 import json
@@ -201,7 +201,7 @@ class BellLabCLIResult:
     warnings: tuple[str, ...] = ()
     errors: tuple[str, ...] = ()
     diagnostics: tuple[str, ...] = ()
-    payload: Mapping[str, object] = MappingProxyType({})
+    payload: Mapping[str, object] = field(default_factory=lambda: MappingProxyType({}))
     valid: bool = True
 
     def __post_init__(self) -> None:
