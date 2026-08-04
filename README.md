@@ -987,7 +987,7 @@ insufficiencies or failures are not reduced silently to success.
 
 ## Requirements
 
-- Python 3.11 or newer;
+- Python 3.10 or newer;
 - runtime and development dependencies listed in `requirements.txt`.
 
 ## Development installation

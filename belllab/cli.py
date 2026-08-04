@@ -1712,15 +1712,13 @@ def _parse_toml_subset(text: str) -> Mapping[str, object]:
 
     root: dict[str, object] = {}
     current: dict[str, object] | None = root
-    current_array_name: str | None = None
     for raw_line in text.splitlines():
         line = raw_line.split("#", 1)[0].strip()
         if not line:
             continue
         if line.startswith("[[") and line.endswith("]]"):
-            name = line[2:-2].strip()
-            current_array_name = name
-            array = root.setdefault(name, [])
+            parent, name = _toml_parent_table(root, line[2:-2].strip())
+            array = parent.setdefault(name, [])
             if not isinstance(array, list):
                 raise BellLabCLIConfigurationError(f"TOML array {name} conflicts with scalar section.")
             item: dict[str, object] = {}
@@ -1728,9 +1726,8 @@ def _parse_toml_subset(text: str) -> Mapping[str, object]:
             current = item
             continue
         if line.startswith("[") and line.endswith("]"):
-            name = line[1:-1].strip()
-            current_array_name = None
-            section = root.setdefault(name, {})
+            parent, name = _toml_parent_table(root, line[1:-1].strip())
+            section = parent.setdefault(name, {})
             if not isinstance(section, dict):
                 raise BellLabCLIConfigurationError(f"TOML section {name} conflicts with array.")
             current = section
@@ -1740,6 +1737,21 @@ def _parse_toml_subset(text: str) -> Mapping[str, object]:
         key, value = line.split("=", 1)
         current[key.strip()] = _parse_toml_value(value.strip())
     return root
+
+
+def _toml_parent_table(root: dict[str, object], dotted_name: str) -> tuple[dict[str, object], str]:
+    """Return the parent mapping and final key for a supported TOML table."""
+
+    parts = dotted_name.split(".")
+    if not all(parts):
+        raise BellLabCLIConfigurationError(f"invalid TOML table name: {dotted_name}")
+    current = root
+    for part in parts[:-1]:
+        child = current.setdefault(part, {})
+        if not isinstance(child, dict):
+            raise BellLabCLIConfigurationError(f"TOML table {dotted_name} conflicts with scalar value.")
+        current = child
+    return current, parts[-1]
 
 
 def _parse_toml_value(value: str) -> object:

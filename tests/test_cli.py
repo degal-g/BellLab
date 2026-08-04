@@ -12,6 +12,7 @@ import numpy as np
 import pytest
 import soundfile as sf
 
+import belllab.cli as cli_module
 from belllab import (
     BellLabCLICommand,
     BellLabCLIConfigurationError,
@@ -211,6 +212,63 @@ run_tracking = false
     )
     assert load_cli_configuration(json_path)["experiment"]["name"] == "config experiment"
     assert load_cli_configuration(toml_path)["recordings"][0]["file_path"] == "audio/pp.wav"
+
+
+def test_toml_compatibility_parser_without_tomllib(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    """The documented TOML subset remains usable on Python 3.10."""
+
+    monkeypatch.setattr(cli_module, "tomllib", None)
+    example = Path(__file__).resolve().parents[1] / "examples" / "experiment.example.toml"
+    loaded_example = load_cli_configuration(example)
+    assert loaded_example["experiment"]["dynamic_labels"] == ["pp", "p", "mf", "f", "ff"]
+    assert len(loaded_example["recordings"]) == 5
+    assert loaded_example["pipeline"]["run_stft"] is True
+
+    compatible = tmp_path / "compatible.toml"
+    compatible.write_text(
+        """
+[experiment]
+name = "Sino áureo"
+dynamic_labels = ["pp", "mf"]
+
+[experiment.metadata]
+material = "bronze"
+
+[[recordings]]
+recording_id = "pp-01"
+dynamic_label = "pp"
+file_path = "audio/pp.wav"
+channel = 0
+enabled = true
+
+[[recordings]]
+recording_id = "mf-01"
+dynamic_label = "mf"
+file_path = "audio/mf.wav"
+microphone_distance_m = 0.125
+enabled = false
+
+[pipeline]
+run_stft = false
+""".strip()
+        + "\n",
+        encoding="utf-8",
+    )
+    loaded = load_cli_configuration(compatible)
+    assert loaded["experiment"]["metadata"]["material"] == "bronze"
+    assert loaded["recordings"][1]["file_path"] == "audio/mf.wav"
+    assert loaded["recordings"][1]["microphone_distance_m"] == pytest.approx(0.125)
+    assert loaded["recordings"][1]["enabled"] is False
+
+    invalid = tmp_path / "invalid.toml"
+    invalid.write_text("[experiment\nname = \"broken\"\n", encoding="utf-8")
+    with pytest.raises(BellLabCLIConfigurationError, match="unsupported TOML line"):
+        load_cli_configuration(invalid)
+
+    unknown = tmp_path / "unknown.toml"
+    unknown.write_text("[unknown]\nvalue = 1\n", encoding="utf-8")
+    with pytest.raises(BellLabCLIConfigurationError, match="unknown configuration key"):
+        load_cli_configuration(unknown)
 
 
 def test_configuration_unknown_key_is_rejected() -> None:
